@@ -4,9 +4,9 @@ Current status: **Early Experimental Stage**
 
 ## Development Roadmap
 
-### Phase 1 — Single Camera Prototype
+### Phase 1 — Camera Prototype
 
-Goal: establish a basic camera capture pipeline.
+Goal: establish a basic camera capture pipeline using Raspberry Pi 5
 
 ## Project Naming
 

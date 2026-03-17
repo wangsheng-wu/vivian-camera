@@ -1,0 +1,31 @@
+project:
+  name: vivian-camera
+
+capture:
+  preview_width: 1280
+  preview_height: 720
+  still_width: 2304
+  still_height: 1296
+  warmup_seconds: 1.5
+  image_format: jpg
+
+cameras:
+  left:
+    index: 0
+    role: left
+    enabled: true
+
+  right:
+    index: 1
+    role: right
+    enabled: true
+
+storage:
+  root_dir: ~/vivian_data
+  session_prefix: session
+  pair_prefix: pair
+
+naming:
+  left_suffix: left
+  right_suffix: right
+  metadata_suffix: meta

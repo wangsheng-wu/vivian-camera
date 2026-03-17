@@ -48,10 +48,11 @@ class StorageManager:
         right_suffix = self.naming_cfg.get("right_suffix", "right")
         metadata_suffix = self.naming_cfg.get("metadata_suffix", "meta")
 
+        image_format = self.config.get("capture", {}).get("image_format", "jpg").lower()
         stem = f"{pair_prefix}_{pair_index:04d}"
 
-        left_path = session_dir / f"{stem}_{left_suffix}.jpg"
-        right_path = session_dir / f"{stem}_{right_suffix}.jpg"
+        left_path = session_dir / f"{stem}_{left_suffix}.{image_format}"
+        right_path = session_dir / f"{stem}_{right_suffix}.{image_format}"
         meta_path = session_dir / f"{stem}_{metadata_suffix}.json"
 
         return {

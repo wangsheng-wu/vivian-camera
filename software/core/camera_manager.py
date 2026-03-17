@@ -134,3 +134,12 @@ class CameraManager:
     def get_camera(self, role: str) -> Optional[Picamera2]:
         return self.cameras.get(role)
     
+    def get_enabled_roles(self) -> List[str]:
+    cameras_cfg = self.config.get("cameras", {})
+    roles: List[str] = []
+
+    for role, role_cfg in cameras_cfg.items():
+        if bool(role_cfg.get("enabled", True)):
+            roles.append(role)
+
+    return roles

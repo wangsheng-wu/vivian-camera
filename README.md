@@ -26,6 +26,8 @@ Goal: Build a reliable pipeline for storing and managing stereo image data
 
 ```
 cd software
+python3 -m pip install -r requirements.txt
+
 cd web
 PORT=5050 USE_MOCK_PREVIEW=1 python3 preview_server.py
 ```
@@ -37,8 +39,6 @@ cd ~/vivian-camera
 git pull
 
 cd software
-python3 -m pip install -r requirements.txt
-
 cd web
 USE_MOCK_PREVIEW=0 python3 preview_server.py
 ```

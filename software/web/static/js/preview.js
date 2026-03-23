@@ -36,7 +36,7 @@ function applyStatus(data) {
     if (kind === "ready") {
       cameraStatusText.textContent = "Dual cameras ready";
     } else if (kind === "mock") {
-      cameraStatusText.textContent = "Camera not available in mock mode";
+      cameraStatusText.textContent = "Cameras are not available in mock mode";
     } else {
       cameraStatusText.textContent = "Camera disconnected";
     }

@@ -27,7 +27,7 @@
               <span class="status-dot" id="camera-status-dot"></span>
               <span id="camera-status-text">
                 {% if mock_preview %}
-                Mock preview
+                Mock
                 {% else %}
                 Checking cameras...
                 {% endif %}
@@ -59,6 +59,12 @@
             decoding="async"
           >
           {% endif %}
+        </div>
+
+        <div class="camera-controls">
+          <div class="shutter-button-container">
+            <button class="shutter-button"></button>
+          </div>
         </div>
       </section>
 

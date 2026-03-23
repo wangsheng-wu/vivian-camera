@@ -401,7 +401,7 @@ def status():
 
     if is_mock:
         status_kind = "mock"
-        status_text = "Mock Preview"
+        status_text = "Mock"
     else:
         if (
             streamer is not None

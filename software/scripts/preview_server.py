@@ -165,19 +165,19 @@ class DualPreviewServer:
                 time.sleep(sleep_time)
 
     def mjpeg_generator(self):
-    while self.running:
-        with self.frame_lock:
-            frame = self.latest_jpeg
+        while self.running:
+            with self.frame_lock:
+                frame = self.latest_jpeg
 
-        if frame is None:
-            time.sleep(0.05)
-            continue
+            if frame is None:
+                time.sleep(0.05)
+                continue
 
-        yield (
-            b"--frame\r\n"
-            b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n"
-        )
-        time.sleep(0.001)
+            yield (
+                b"--frame\r\n"
+                b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n"
+            )
+            time.sleep(0.001)
 
     def status(self) -> dict:
         uptime = time.time() - self.start_time if self.start_time else 0.0

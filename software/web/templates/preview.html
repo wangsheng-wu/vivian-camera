@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Vivian Camera Preview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/preview.css') }}">
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div>
+        <h1>Vivian Camera</h1>
+        <p class="subtitle">Dual-camera live preview</p>
+      </div>
+
+      <div class="status-pill">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Connecting...</span>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="viewer-card">
+        <div class="viewer-header">
+          <div class="viewer-title-group">
+            <h2>Live Preview</h2>
+            <p>Left + right camera stream</p>
+          </div>
+        </div>
+
+        <div class="viewer-frame">
+          <img id="preview-image" src="/stream.mjpg" alt="Dual camera preview">
+        </div>
+      </section>
+
+      <section class="info-grid">
+        <div class="info-card">
+          <div class="info-label">Resolution (each)</div>
+          <div class="info-value" id="resolution-value">--</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-label">Target FPS</div>
+          <div class="info-value" id="fps-value">--</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-label">Frame Count</div>
+          <div class="info-value" id="frame-count-value">--</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-label">Uptime</div>
+          <div class="info-value" id="uptime-value">--</div>
+        </div>
+      </section>
+
+      <section class="detail-card">
+        <div class="detail-header">
+          <h2>System Status</h2>
+          <button id="refresh-status-btn" type="button">Refresh</button>
+        </div>
+
+        <dl class="detail-list">
+          <div class="detail-row">
+            <dt>Left Camera Index</dt>
+            <dd id="left-index-value">--</dd>
+          </div>
+          <div class="detail-row">
+            <dt>Right Camera Index</dt>
+            <dd id="right-index-value">--</dd>
+          </div>
+          <div class="detail-row">
+            <dt>Last Frame Age</dt>
+            <dd id="frame-age-value">--</dd>
+          </div>
+          <div class="detail-row">
+            <dt>Stream Endpoint</dt>
+            <dd><code>/stream.mjpg</code></dd>
+          </div>
+          <div class="detail-row">
+            <dt>Status Endpoint</dt>
+            <dd><code>/status</code></dd>
+          </div>
+        </dl>
+      </section>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/preview.js') }}"></script>
+</body>
+</html>

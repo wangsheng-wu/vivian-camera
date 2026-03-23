@@ -1,0 +1,36 @@
+body {
+    margin: 0;
+    background: #111;
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+}
+  
+.container {
+    padding: 20px;
+}
+  
+.viewer {
+    margin: 20px auto;
+    max-width: 900px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #333;
+}
+  
+img {
+    width: 100%;
+}
+  
+button {
+    padding: 10px 20px;
+    background: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+  
+.status {
+    margin-top: 10px;
+    color: #aaa;
+}

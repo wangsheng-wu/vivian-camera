@@ -1,94 +1,17 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import io
-import time
-import signal
 import atexit
+import signal
 import threading
+import time
 from dataclasses import dataclass
+from pathlib import Path
 
 import cv2
 import numpy as np
-from flask import Flask, Response, jsonify, render_template_string
+from flask import Flask, Response, jsonify, render_template
 from picamera2 import Picamera2
-
-
-HTML_PAGE = """
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Vivian Camera Preview</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      margin: 0;
-      background: #111;
-      color: #eee;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .wrap {
-      width: min(95vw, 1400px);
-      margin: 24px auto;
-    }
-    h1 {
-      font-size: 20px;
-      font-weight: 600;
-      margin: 0 0 12px 0;
-    }
-    .sub {
-      color: #aaa;
-      font-size: 13px;
-      margin-bottom: 16px;
-    }
-    .viewer {
-      background: #000;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid #2a2a2a;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    }
-    img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-    .meta {
-      margin-top: 14px;
-      font-size: 13px;
-      color: #bbb;
-      display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-    code {
-      background: #1c1c1c;
-      padding: 2px 6px;
-      border-radius: 6px;
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <h1>Vivian Camera Dual Preview</h1>
-    <div class="sub">
-      Left + Right live preview from Raspberry Pi
-    </div>
-    <div class="viewer">
-      <img src="/stream.mjpg" alt="Dual camera preview">
-    </div>
-    <div class="meta">
-      <div>Stream: <code>/stream.mjpg</code></div>
-      <div>Status: <code>/status</code></div>
-    </div>
-  </div>
-</body>
-</html>
-"""
 
 
 @dataclass
@@ -193,7 +116,6 @@ class DualPreviewServer:
                     vflip=self.config.vflip_right,
                 )
 
-                # Picamera2 returns RGB888 here; OpenCV encode expects BGR.
                 left_bgr = cv2.cvtColor(left, cv2.COLOR_RGB2BGR)
                 right_bgr = cv2.cvtColor(right, cv2.COLOR_RGB2BGR)
 
@@ -274,11 +196,20 @@ class DualPreviewServer:
 
 
 def create_app(server: DualPreviewServer) -> Flask:
-    app = Flask(__name__)
+    project_root = Path(__file__).resolve().parents[1]
+    template_dir = project_root / "web" / "templates"
+    static_dir = project_root / "web" / "static"
+
+    app = Flask(
+        __name__,
+        template_folder=str(template_dir),
+        static_folder=str(static_dir),
+        static_url_path="/static",
+    )
 
     @app.route("/")
     def index():
-        return render_template_string(HTML_PAGE)
+        return render_template("preview.html")
 
     @app.route("/stream.mjpg")
     def stream():

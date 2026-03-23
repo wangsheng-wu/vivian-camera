@@ -223,7 +223,7 @@ def mjpeg_generator():
 def index():
     return render_template(
         "preview.html",
-        mock_preview=False,
+        mock_preview=use_mock_preview(),
     )
 
 

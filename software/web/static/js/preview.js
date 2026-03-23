@@ -47,6 +47,15 @@ function applyDisconnectedState() {
     statusDot.classList.remove("live");
 }
   
+function startPreviewStream() {
+    const previewImage = document.getElementById("preview-image");
+    if (!previewImage) return;
+  
+    if (!previewImage.getAttribute("src")) {
+      previewImage.src = "/stream.mjpg";
+    }
+}
+  
 document.addEventListener("DOMContentLoaded", () => {
     const refreshButton = document.getElementById("refresh-status-btn");
   
@@ -56,4 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (refreshButton) {
       refreshButton.addEventListener("click", fetchStatus);
     }
+  
+    startPreviewStream();
 });

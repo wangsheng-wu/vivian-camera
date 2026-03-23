@@ -1,26 +1,12 @@
-let frameRefreshTimer = null;
-let isPreviewRunning = false;
-
-async function fetchStatus() {
-  try {
-    const response = await fetch("/status", { cache: "no-store" });
-    const data = await response.json();
-    applyStatus(data);
-
-    if (data.connected) {
-      startPreviewLoop();
-    } else {
-      stopPreviewLoop();
-    }
-  } catch (error) {
-    applyDisconnectedState();
-    stopPreviewLoop();
-  }
-}
+let statusTimer = null;
+let previewHealthTimer = null;
 
 function applyStatus(data) {
   const statusText = document.getElementById("status-text");
   const statusDot = document.getElementById("status-dot");
+
+  const cameraStatusText = document.getElementById("camera-status-text");
+  const cameraStatusDot = document.getElementById("camera-status-dot");
 
   const resolutionValue = document.getElementById("resolution-value");
   const fpsValue = document.getElementById("fps-value");
@@ -31,15 +17,35 @@ function applyStatus(data) {
   const rightIndexValue = document.getElementById("right-index-value");
   const frameAgeValue = document.getElementById("frame-age-value");
 
+  const kind = data.status_kind || "disconnected";
+
   if (statusText) {
     statusText.textContent = data.status_text || "Ready";
   }
 
   if (statusDot) {
-    if (data.connected) {
+    statusDot.classList.remove("live", "mock");
+    if (kind === "ready") {
       statusDot.classList.add("live");
+    } else if (kind === "mock") {
+      statusDot.classList.add("mock");
+    }
+  }
+
+  if (cameraStatusText) {
+    if (kind === "ready") {
+      cameraStatusText.textContent = "Dual cameras ready";
+    } else if (kind === "mock") {
+      cameraStatusText.textContent = "Camera not available in mock mode";
     } else {
-      statusDot.classList.remove("live");
+      cameraStatusText.textContent = "Camera disconnected";
+    }
+  }
+
+  if (cameraStatusDot) {
+    cameraStatusDot.classList.remove("live", "mock");
+    if (kind === "ready") {
+      cameraStatusDot.classList.add("live");
     }
   }
 
@@ -57,49 +63,91 @@ function applyDisconnectedState() {
   const statusText = document.getElementById("status-text");
   const statusDot = document.getElementById("status-dot");
 
+  const cameraStatusText = document.getElementById("camera-status-text");
+  const cameraStatusDot = document.getElementById("camera-status-dot");
+
   if (statusText) {
     statusText.textContent = "Disconnected";
   }
 
   if (statusDot) {
-    statusDot.classList.remove("live");
+    statusDot.classList.remove("live", "mock");
+  }
+
+  if (cameraStatusText) {
+    cameraStatusText.textContent = "Camera disconnected";
+  }
+
+}
+
+async function fetchStatus() {
+  try {
+    const response = await fetch("/status", { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`Status HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    applyStatus(data);
+  } catch (error) {
+    applyDisconnectedState();
   }
 }
 
-function refreshPreviewFrame() {
+function restartPreviewStream() {
   const previewImage = document.getElementById("preview-image");
   if (!previewImage) return;
 
-  const cacheBust = `t=${Date.now()}`;
-  previewImage.src = `/frame.jpg?${cacheBust}`;
+  const nextSrc = `/stream.mjpg?t=${Date.now()}`;
+  previewImage.src = nextSrc;
 }
 
-function startPreviewLoop() {
-  if (isPreviewRunning) return;
+function setupPreviewHealthCheck() {
+  const previewImage = document.getElementById("preview-image");
+  if (!previewImage) return;
 
-  isPreviewRunning = true;
-  refreshPreviewFrame();
+  previewImage.addEventListener("error", () => {
+    setTimeout(() => {
+      restartPreviewStream();
+    }, 500);
+  });
 
-  frameRefreshTimer = window.setInterval(() => {
-    refreshPreviewFrame();
-  }, 120);
-}
+  previewHealthTimer = window.setInterval(async () => {
+    try {
+      const response = await fetch("/status", { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error("Status request failed");
+      }
 
-function stopPreviewLoop() {
-  if (frameRefreshTimer !== null) {
-    window.clearInterval(frameRefreshTimer);
-    frameRefreshTimer = null;
-  }
-  isPreviewRunning = false;
+      const data = await response.json();
+      applyStatus(data);
+
+      if (!data.connected) {
+        restartPreviewStream();
+        return;
+      }
+
+      const ageText = String(data.last_frame_age ?? "");
+      const ageValue = Number.parseFloat(ageText.replace("s", ""));
+      if (!Number.isNaN(ageValue) && ageValue > 1.5) {
+        restartPreviewStream();
+      }
+    } catch (error) {
+      applyDisconnectedState();
+      restartPreviewStream();
+    }
+  }, 2000);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   const refreshButton = document.getElementById("refresh-status-btn");
 
   fetchStatus();
-  window.setInterval(fetchStatus, 1000);
+  statusTimer = window.setInterval(fetchStatus, 1000);
 
   if (refreshButton) {
     refreshButton.addEventListener("click", fetchStatus);
   }
+
+  setupPreviewHealthCheck();
 });

@@ -58,13 +58,27 @@ body {
     border-radius: 50%;
     background: #6b7280;
     box-shadow: 0 0 10px rgba(107, 114, 128, 0.4);
+    flex-shrink: 0;
 }
-  
+
 .status-dot.live {
     background: #43d17a;
     box-shadow: 0 0 12px rgba(67, 209, 122, 0.6);
 }
-  
+
+.status-dot.mock {
+    background: #4da3ff;
+    box-shadow: 0 0 12px rgba(77, 163, 255, 0.55);
+}
+
+.camera-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 14px;
+    color: #97a0aa;
+}
 .content {
     display: grid;
     gap: 20px;

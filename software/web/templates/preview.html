@@ -23,12 +23,15 @@
       <section class="viewer-card">
         <div class="viewer-header">
           <div class="viewer-title-group">
-            <p>
-              {% if mock_preview %}
-              Camera disconnected
-              {% else %}
-              Camera connected
-              {% endif %}
+            <p class="camera-status">
+              <span class="status-dot" id="camera-status-dot"></span>
+              <span id="camera-status-text">
+                {% if mock_preview %}
+                Mock preview
+                {% else %}
+                Checking cameras...
+                {% endif %}
+              </span>
             </p>
           </div>
         </div>
@@ -49,7 +52,12 @@
             </div>
           </div>
           {% else %}
-          <img id="preview-image" alt="Dual camera preview">
+          <img
+            id="preview-image"
+            src="/stream.mjpg"
+            alt="Dual camera preview"
+            decoding="async"
+          >
           {% endif %}
         </div>
       </section>

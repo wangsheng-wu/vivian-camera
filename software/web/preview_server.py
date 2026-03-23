@@ -36,9 +36,16 @@ class DualCameraStreamer:
         self.left_index = int(os.environ.get("LEFT_CAMERA_INDEX", "0"))
         self.right_index = int(os.environ.get("RIGHT_CAMERA_INDEX", "1"))
 
-        self.width = int(os.environ.get("PREVIEW_WIDTH", "1152"))
-        self.height = int(os.environ.get("PREVIEW_HEIGHT", "648"))
+        # main: 留给未来正式拍摄
+        self.main_width = int(os.environ.get("CAPTURE_WIDTH", "2304"))
+        self.main_height = int(os.environ.get("CAPTURE_HEIGHT", "1296"))
+
+        # lores: 专门用于实时预览
+        self.preview_width = int(os.environ.get("PREVIEW_WIDTH", "640"))
+        self.preview_height = int(os.environ.get("PREVIEW_HEIGHT", "360"))
+
         self.target_fps = int(os.environ.get("TARGET_FPS", "12"))
+        self.jpeg_quality = int(os.environ.get("JPEG_QUALITY", "70"))
 
         self.left_cam: Optional[Any] = None
         self.right_cam: Optional[Any] = None
@@ -59,17 +66,21 @@ class DualCameraStreamer:
                 self.left_cam = Picamera2(self.left_index)
                 self.right_cam = Picamera2(self.right_index)
 
-                preview_config_left = self.left_cam.create_preview_configuration(
-                    main={"size": (self.width, self.height), "format": "RGB888"},
+                left_config = self.left_cam.create_preview_configuration(
+                    main={"size": (self.main_width, self.main_height), "format": "RGB888"},
+                    lores={"size": (self.preview_width, self.preview_height), "format": "RGB888"},
                     buffer_count=4,
+                    queue=True,
                 )
-                preview_config_right = self.right_cam.create_preview_configuration(
-                    main={"size": (self.width, self.height), "format": "RGB888"},
+                right_config = self.right_cam.create_preview_configuration(
+                    main={"size": (self.main_width, self.main_height), "format": "RGB888"},
+                    lores={"size": (self.preview_width, self.preview_height), "format": "RGB888"},
                     buffer_count=4,
+                    queue=True,
                 )
 
-                self.left_cam.configure(preview_config_left)
-                self.right_cam.configure(preview_config_right)
+                self.left_cam.configure(left_config)
+                self.right_cam.configure(right_config)
 
                 self.left_cam.start()
                 self.right_cam.start()
@@ -102,27 +113,32 @@ class DualCameraStreamer:
             self.right_cam = None
             self.running = False
 
-    def get_combined_frame(self) -> np.ndarray:
+    def _capture_preview_pair(self) -> tuple[np.ndarray, np.ndarray]:
         if not self.running or self.left_cam is None or self.right_cam is None:
             raise RuntimeError("Cameras are not running.")
 
         with self.lock:
-            left_rgb = self.left_cam.capture_array("main")
-            right_rgb = self.right_cam.capture_array("main")
+            left_rgb = self.left_cam.capture_array("lores")
+            right_rgb = self.right_cam.capture_array("lores")
+
+        return left_rgb, right_rgb
+
+    def get_combined_preview_frame(self) -> np.ndarray:
+        left_rgb, right_rgb = self._capture_preview_pair()
 
         combined_rgb = np.hstack((left_rgb, right_rgb))
         self.last_frame = combined_rgb
         self.last_frame_ts = time.time()
         return combined_rgb
 
-    def get_jpeg_bytes(self, jpeg_quality: int = 85) -> bytes:
-        frame_rgb = self.get_combined_frame()
+    def get_preview_jpeg_bytes(self) -> bytes:
+        frame_rgb = self.get_combined_preview_frame()
         frame_bgr = cv2.cvtColor(frame_rgb, cv2.COLOR_RGB2BGR)
 
         ok, encoded = cv2.imencode(
             ".jpg",
             frame_bgr,
-            [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality],
+            [int(cv2.IMWRITE_JPEG_QUALITY), self.jpeg_quality],
         )
         if not ok:
             raise RuntimeError("Failed to encode JPEG frame.")
@@ -134,8 +150,11 @@ class DualCameraStreamer:
             return None
         return time.time() - self.last_frame_ts
 
-    def resolution_text(self) -> str:
-        return f"{self.width} × {self.height}"
+    def preview_resolution_text(self) -> str:
+        return f"{self.preview_width} × {self.preview_height}"
+
+    def capture_resolution_text(self) -> str:
+        return f"{self.main_width} × {self.main_height}"
 
 
 camera_streamer: Optional[DualCameraStreamer] = None
@@ -195,7 +214,7 @@ def generate_mock_jpeg() -> bytes:
         cv2.LINE_AA,
     )
 
-    ok, encoded = cv2.imencode(".jpg", image, [int(cv2.IMWRITE_JPEG_QUALITY), 85])
+    ok, encoded = cv2.imencode(".jpg", image, [int(cv2.IMWRITE_JPEG_QUALITY), 75])
     if not ok:
         raise RuntimeError("Failed to encode mock JPEG frame.")
     return encoded.tobytes()
@@ -203,7 +222,6 @@ def generate_mock_jpeg() -> bytes:
 
 def mjpeg_generator():
     global FRAME_COUNT
-
     frame_interval = 1.0 / max(int(os.environ.get("TARGET_FPS", "12")), 1)
 
     while True:
@@ -213,7 +231,7 @@ def mjpeg_generator():
             else:
                 if camera_streamer is None or not camera_streamer.running:
                     raise RuntimeError("Camera streamer is not available.")
-                jpeg = camera_streamer.get_jpeg_bytes()
+                jpeg = camera_streamer.get_preview_jpeg_bytes()
 
             FRAME_COUNT += 1
 
@@ -225,8 +243,7 @@ def mjpeg_generator():
             time.sleep(frame_interval)
 
         except Exception as exc:
-            error_text = f"Stream error: {exc}"
-            print(f"[preview_server] {error_text}")
+            print(f"[preview_server] Stream error: {exc}")
             time.sleep(0.2)
 
 
@@ -247,7 +264,8 @@ def status():
             {
                 "connected": True,
                 "status_text": "Mock Preview Ready",
-                "resolution": "1152 × 648",
+                "resolution": "640 × 360",
+                "capture_resolution": "--",
                 "target_fps": int(os.environ.get("TARGET_FPS", "12")),
                 "frame_count": FRAME_COUNT,
                 "uptime": format_uptime(uptime_seconds),
@@ -261,7 +279,7 @@ def status():
     frame_age = None if camera_streamer is None else camera_streamer.frame_age_seconds()
     frame_age_text = "--" if frame_age is None else f"{frame_age:.2f}s"
 
-    status_text = "Live Stream Ready" if connected else "Camera Not Ready"
+    status_text = "Live Preview Ready" if connected else "Camera Not Ready"
     if camera_streamer is not None and camera_streamer.last_error:
         status_text = camera_streamer.last_error
 
@@ -269,7 +287,8 @@ def status():
         {
             "connected": connected,
             "status_text": status_text,
-            "resolution": camera_streamer.resolution_text() if camera_streamer else "--",
+            "resolution": camera_streamer.preview_resolution_text() if camera_streamer else "--",
+            "capture_resolution": camera_streamer.capture_resolution_text() if camera_streamer else "--",
             "target_fps": int(os.environ.get("TARGET_FPS", "12")),
             "frame_count": FRAME_COUNT,
             "uptime": format_uptime(uptime_seconds),
@@ -290,7 +309,7 @@ def frame_jpg():
         else:
             if camera_streamer is None or not camera_streamer.running:
                 raise RuntimeError("Camera streamer is not available.")
-            jpeg = camera_streamer.get_jpeg_bytes()
+            jpeg = camera_streamer.get_preview_jpeg_bytes()
 
         FRAME_COUNT += 1
 

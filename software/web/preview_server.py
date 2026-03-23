@@ -2,12 +2,11 @@ import atexit
 import os
 import threading
 import time
-from typing import Optional
+from typing import Optional, Any
 
 import cv2
 import numpy as np
 from flask import Flask, Response, jsonify, render_template
-from picamera2 import Picamera2
 
 app = Flask(__name__)
 
@@ -17,6 +16,17 @@ FRAME_COUNT = 0
 
 def use_mock_preview() -> bool:
     return os.environ.get("USE_MOCK_PREVIEW", "1") == "1"
+
+
+def load_picamera2_class():
+    try:
+        from picamera2 import Picamera2
+        return Picamera2
+    except Exception as exc:
+        raise RuntimeError(
+            "picamera2 is unavailable. Real camera mode requires Raspberry Pi "
+            "with Picamera2 installed. Use USE_MOCK_PREVIEW=1 on Mac/local development."
+        ) from exc
 
 
 class DualCameraStreamer:
@@ -30,8 +40,8 @@ class DualCameraStreamer:
         self.height = int(os.environ.get("PREVIEW_HEIGHT", "648"))
         self.target_fps = int(os.environ.get("TARGET_FPS", "12"))
 
-        self.left_cam: Optional[Picamera2] = None
-        self.right_cam: Optional[Picamera2] = None
+        self.left_cam: Optional[Any] = None
+        self.right_cam: Optional[Any] = None
 
         self.running = False
         self.last_frame = None
@@ -44,6 +54,8 @@ class DualCameraStreamer:
                 return
 
             try:
+                Picamera2 = load_picamera2_class()
+
                 self.left_cam = Picamera2(self.left_index)
                 self.right_cam = Picamera2(self.right_index)
 

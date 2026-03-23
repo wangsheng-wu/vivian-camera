@@ -6,7 +6,7 @@ html,
 body {
     margin: 0;
     padding: 0;
-    background: #111315;
+    background: #0b0c0c;
     color: #f3f5f7;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -45,10 +45,10 @@ body {
 .status-pill {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    background: #1a1d21;
-    border: 1px solid #2a2f36;
+    gap: 12px;
+    padding: 8px 12px;
+    background: #0d0d0f;
+    border: 1px solid #2f333a;
     border-radius: 999px;
 }
   
@@ -73,14 +73,14 @@ body {
 .viewer-card,
 .detail-card,
 .info-card {
-    background: #171a1f;
-    border: 1px solid #2b3139;
-    border-radius: 20px;
+    background: #0d0d0f;
+    border: 1px solid #2f333a;
+    border-radius: 8px;
 }
   
 .viewer-card,
 .detail-card {
-    padding: 18px;
+    padding: 8px;
 }
   
 .viewer-header,
@@ -89,7 +89,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
 }
   
 .viewer-title-group h2,
@@ -100,15 +100,14 @@ body {
 }
   
 .viewer-title-group p {
-    margin: 6px 0 0;
+    margin: 0px 0 0;
     font-size: 14px;
     color: #97a0aa;
 }
   
 .viewer-frame {
     width: 100%;
-    aspect-ratio: 16 / 9;
-    border-radius: 18px;
+    border-radius: 0px;
     overflow: hidden;
     background: #0d0f12;
     border: 1px solid #252b33;
@@ -126,11 +125,7 @@ body {
 .preview-placeholder {
     position: relative;
     width: 100%;
-    height: 100%;
-    background:
-      radial-gradient(circle at 30% 30%, rgba(255,255,255,0.06), transparent 24%),
-      radial-gradient(circle at 70% 65%, rgba(255,255,255,0.04), transparent 28%),
-      linear-gradient(135deg, #14181d 0%, #0c0f13 100%);
+    aspect-ratio: 32 / 9;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -165,11 +160,9 @@ body {
   
 .mock-cam-box::before {
     content: "";
-    width: 72%;
-    height: 72%;
-    border-radius: 24px;
-    border: 1px dashed rgba(255,255,255,0.18);
-    background: rgba(255,255,255,0.02);
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
     display: block;
 }
   
@@ -233,8 +226,8 @@ body {
     border: none;
     background: #242a31;
     color: #eef2f6;
-    padding: 10px 14px;
-    border-radius: 12px;
+    padding: 8px 12px;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
 }
@@ -245,7 +238,7 @@ body {
   
 .detail-list {
     display: grid;
-    gap: 10px;
+    gap: 0px;
     margin: 0;
 }
   
@@ -253,7 +246,7 @@ body {
     display: grid;
     grid-template-columns: 180px 1fr;
     gap: 12px;
-    padding: 12px 0;
+    padding: 8px 0;
     border-bottom: 1px solid #272d35;
 }
   

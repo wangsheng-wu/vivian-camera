@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Vivian Camera Preview</title>
+  <title>Vivian Camera</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/preview.css') }}">
 </head>
@@ -11,13 +11,6 @@
     <header class="topbar">
       <div>
         <h1>Vivian Camera</h1>
-        <p class="topbar-subtitle">
-          {% if mock_preview %}
-          Local UI Mock Mode
-          {% else %}
-          Live Camera Preview
-          {% endif %}
-        </p>
       </div>
 
       <div class="status-pill">
@@ -30,12 +23,11 @@
       <section class="viewer-card">
         <div class="viewer-header">
           <div class="viewer-title-group">
-            <h2>Live Preview</h2>
             <p>
               {% if mock_preview %}
-              Placeholder for UI tuning
+              Camera disconnected
               {% else %}
-              Left + right camera preview
+              Camera connected
               {% endif %}
             </p>
           </div>
@@ -44,8 +36,6 @@
         <div class="viewer-frame">
           {% if mock_preview %}
           <div class="preview-placeholder">
-            <div class="preview-overlay-label">MOCK PREVIEW</div>
-
             <div class="preview-split">
               <div class="mock-cam-box">
                 <span class="mock-cam-title">LEFT CAMERA</span>
@@ -56,11 +46,6 @@
               <div class="mock-cam-box">
                 <span class="mock-cam-title">RIGHT CAMERA</span>
               </div>
-            </div>
-
-            <div class="preview-center-meta">
-              <div class="preview-main-label">Vivian Dual Preview</div>
-              <div class="preview-sub-label">Layout and visual tuning mode</div>
             </div>
           </div>
           {% else %}

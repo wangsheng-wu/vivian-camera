@@ -11,7 +11,13 @@
     <header class="topbar">
       <div>
         <h1>Vivian Camera</h1>
-        <p class="subtitle">Dual-camera live preview</p>
+        <p class="topbar-subtitle">
+          {% if mock_preview %}
+          Local UI Mock Mode
+          {% else %}
+          Live Camera Preview
+          {% endif %}
+        </p>
       </div>
 
       <div class="status-pill">
@@ -25,12 +31,41 @@
         <div class="viewer-header">
           <div class="viewer-title-group">
             <h2>Live Preview</h2>
-            <p>Left + right camera stream</p>
+            <p>
+              {% if mock_preview %}
+              Placeholder for UI tuning
+              {% else %}
+              Left + right camera stream
+              {% endif %}
+            </p>
           </div>
         </div>
 
         <div class="viewer-frame">
+          {% if mock_preview %}
+          <div class="preview-placeholder">
+            <div class="preview-overlay-label">MOCK PREVIEW</div>
+
+            <div class="preview-split">
+              <div class="mock-cam-box">
+                <span class="mock-cam-title">LEFT CAMERA</span>
+              </div>
+
+              <div class="mock-divider"></div>
+
+              <div class="mock-cam-box">
+                <span class="mock-cam-title">RIGHT CAMERA</span>
+              </div>
+            </div>
+
+            <div class="preview-center-meta">
+              <div class="preview-main-label">Vivian Dual Preview</div>
+              <div class="preview-sub-label">Layout and visual tuning mode</div>
+            </div>
+          </div>
+          {% else %}
           <img id="preview-image" src="/stream.mjpg" alt="Dual camera preview">
+          {% endif %}
         </div>
       </section>
 
@@ -67,21 +102,36 @@
             <dt>Left Camera Index</dt>
             <dd id="left-index-value">--</dd>
           </div>
+
           <div class="detail-row">
             <dt>Right Camera Index</dt>
             <dd id="right-index-value">--</dd>
           </div>
+
           <div class="detail-row">
             <dt>Last Frame Age</dt>
             <dd id="frame-age-value">--</dd>
           </div>
+
           <div class="detail-row">
             <dt>Stream Endpoint</dt>
             <dd><code>/stream.mjpg</code></dd>
           </div>
+
           <div class="detail-row">
             <dt>Status Endpoint</dt>
             <dd><code>/status</code></dd>
+          </div>
+
+          <div class="detail-row">
+            <dt>Preview Mode</dt>
+            <dd>
+              {% if mock_preview %}
+              <code>mock</code>
+              {% else %}
+              <code>real</code>
+              {% endif %}
+            </dd>
           </div>
         </dl>
       </section>

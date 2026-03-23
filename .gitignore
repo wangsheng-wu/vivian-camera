@@ -1,4 +1,6 @@
 .DS_Store
 .venv/
 .env
+*.jpg
+*.png
 data/

@@ -62,7 +62,6 @@ class DualCameraStreamer:
                 self.left_cam.start()
                 self.right_cam.start()
 
-                # Let auto controls settle briefly.
                 time.sleep(1.0)
 
                 self.running = True
@@ -269,6 +268,32 @@ def status():
     )
 
 
+@app.route("/frame.jpg")
+def frame_jpg():
+    global FRAME_COUNT
+
+    try:
+        if use_mock_preview():
+            jpeg = generate_mock_jpeg()
+        else:
+            if camera_streamer is None or not camera_streamer.running:
+                raise RuntimeError("Camera streamer is not available.")
+            jpeg = camera_streamer.get_jpeg_bytes()
+
+        FRAME_COUNT += 1
+
+        response = Response(jpeg, mimetype="image/jpeg")
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
+
+    except Exception as exc:
+        error_text = f"Frame endpoint error: {exc}"
+        print(f"[preview_server] {error_text}")
+        return Response(error_text, status=500, mimetype="text/plain")
+
+
 @app.route("/stream.mjpg")
 def stream_mjpg():
     return Response(
@@ -287,7 +312,4 @@ if __name__ == "__main__":
     host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", "5000"))
 
-    # Important:
-    # - use_reloader=False prevents Flask debug reloader from opening cameras twice
-    # - debug=False is safer for camera access on Pi
     app.run(host=host, port=port, debug=False, use_reloader=False, threaded=True)

@@ -9,6 +9,7 @@
     --color-text-tertiary: #9aa3ad;
     --color-text-label: #8e98a3;
     --color-text-hint: #b63434;
+    --color-text-selected: #1c84e6;
 
     /* Border */
     --color-border: #2f333a;
@@ -305,7 +306,7 @@ body {
     position: absolute;
     left: 8px;
     right: 8px;
-    bottom: 70px;
+    bottom: 66px;
     z-index: 30;
 
     padding: 12px;
@@ -328,19 +329,14 @@ body {
 .control-picker-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
+    justify-content: center;
+    margin-bottom: 8px;
 }
 
 .control-picker-title {
-    font-size: 12px;
+    font-size: 16px;
     letter-spacing: 0.08em;
     color: var(--color-text-label);
-}
-
-.control-picker-current {
-    font-size: 18px;
-    color: var(--color-text-primary);
 }
 
 .control-picker-viewport {
@@ -381,10 +377,10 @@ body {
     align-items: center;
     justify-content: center;
     color: var(--color-text-tertiary);
-    font-size: 18px;
+    font-size: 16px;
     letter-spacing: 0.01em;
     transition: color 0.12s ease, transform 0.12s ease, opacity 0.12s ease;
-    opacity: 0.55;
+    opacity: 0.5;
     cursor: pointer;
 }
 
@@ -392,11 +388,14 @@ body {
     color: var(--color-text-primary);
     opacity: 1;
     transform: scale(1.03);
+    font-size: 26px;
+    color: var(--color-text-selected);
 }
 
 .control-picker-item.is-near {
     color: var(--color-text-secondary);
-    opacity: 0.82;
+    opacity: 0.8;
+    font-size: 18px;
 }
 
 #preview-image {
@@ -608,6 +607,22 @@ code {
     }
 
     .control-picker {
-        bottom: 58px;
+        bottom: 104px;
+    }
+
+    .control-picker-viewport {
+        height: 148px;
+    }
+
+    .control-picker-item {
+        font-size: 12px;
+    }
+
+    .control-picker-item.is-selected {
+        font-size: 20px;
+    }
+
+    .control-picker-item.is-near {
+        font-size: 16px;
     }
 }

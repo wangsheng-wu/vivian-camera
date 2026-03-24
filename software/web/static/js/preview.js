@@ -173,11 +173,10 @@ function setupFixedControlHints() {
 function setupAdjustableControls() {
   const picker = document.getElementById("control-picker");
   const pickerTitle = document.getElementById("control-picker-title");
-  const pickerCurrent = document.getElementById("control-picker-current");
   const pickerViewport = document.getElementById("control-picker-viewport");
   const pickerList = document.getElementById("control-picker-list");
 
-  if (!picker || !pickerTitle || !pickerCurrent || !pickerViewport || !pickerList) {
+  if (!picker || !pickerTitle || !pickerViewport || !pickerList) {
     return;
   }
 
@@ -226,9 +225,6 @@ function setupAdjustableControls() {
       }
     });
 
-    if (pickerCurrent) {
-      pickerCurrent.textContent = activeOptions[selectedIndex] ?? "";
-    }
   }
 
   function buildItems(options) {

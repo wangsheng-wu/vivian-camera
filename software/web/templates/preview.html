@@ -63,11 +63,17 @@
 
         <div class="camera-controls">
           <div class="control-cluster control-cluster-left">
-            <button class="adjustable-control" type="button">
+            <button
+              class="adjustable-control"
+              type="button"
+              data-control="iso"
+              data-options="100,200,400,800,1600,3200,6400"
+              data-default="100"
+            >
               <span class="control-label">ISO</span>
               <span class="control-value">100</span>
             </button>
-            
+
             <button
               class="adjustable-control is-disabled"
               type="button"
@@ -76,28 +82,70 @@
               <span class="control-label">F</span>
               <span class="control-value">1.8</span>
             </button>
-            
-            <button class="adjustable-control" type="button">
+
+            <button
+              class="adjustable-control"
+              type="button"
+              data-control="shutter"
+              data-options="1/15,1/30,1/60,1/125,1/250,1/500,1/1000"
+              data-default="1/60"
+            >
               <span class="control-label">Shutter</span>
               <span class="control-value">1/60</span>
             </button>
-            
-            <button class="adjustable-control" type="button">
+
+            <button
+              class="adjustable-control"
+              type="button"
+              data-control="ev"
+              data-options="-2.0,-1.5,-1.0,-0.5,0.0,+0.5,+1.0,+1.5,+2.0"
+              data-default="0.0"
+            >
               <span class="control-label">EV</span>
               <span class="control-value">0.0</span>
             </button>
           </div>
-        
+
           <div class="shutter-button-container">
             <button class="shutter-button" type="button" aria-label="Shutter"></button>
           </div>
-        
+
           <div class="control-cluster control-cluster-right">
-            <button class="adjustable-control" type="button">WB</button>
-            <button class="adjustable-control" type="button">FOCUS</button>
+            <button
+              class="adjustable-control"
+              type="button"
+              data-control="wb"
+              data-options="Auto,Daylight,Cloudy,Tungsten,Fluorescent,Shade"
+              data-default="Auto"
+            >
+              <span class="control-label">WB</span>
+              <span class="control-value">Auto</span>
+            </button>
+
+            <button
+              class="adjustable-control"
+              type="button"
+              data-control="focus"
+              data-options="Auto,0.2m,0.5m,1m,2m,5m,∞"
+              data-default="Auto"
+            >
+              <span class="control-label">FOCUS</span>
+              <span class="control-value">Auto</span>
+            </button>
           </div>
         </div>
 
+        <div class="control-picker" id="control-picker" aria-hidden="true">
+          <div class="control-picker-header">
+            <span class="control-picker-title" id="control-picker-title">ISO</span>
+            <span class="control-picker-current" id="control-picker-current">100</span>
+          </div>
+
+          <div class="control-picker-viewport" id="control-picker-viewport">
+            <div class="control-picker-highlight"></div>
+            <div class="control-picker-list" id="control-picker-list"></div>
+          </div>
+        </div>
       </section>
 
       <section class="info-grid">

@@ -151,3 +151,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setupPreviewHealthCheck();
 });
+
+
+
+function setupFixedControlHints() {
+  const controls = document.querySelectorAll('.control-placeholder.is-disabled[data-fixed-hint]');
+
+  controls.forEach((button) => {
+    const valueEl = button.querySelector('.control-value');
+    if (!valueEl) return;
+
+    const originalValue = valueEl.textContent;
+    const hintText = button.dataset.fixedHint;
+    let resetTimer = null;
+
+    button.addEventListener('click', () => {
+      if (resetTimer) {
+        clearTimeout(resetTimer);
+      }
+
+      valueEl.textContent = hintText;
+      button.classList.add('show-hint');
+
+      resetTimer = window.setTimeout(() => {
+        valueEl.textContent = originalValue;
+        button.classList.remove('show-hint');
+        resetTimer = null;
+      }, 1200);
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setupFixedControlHints();
+});

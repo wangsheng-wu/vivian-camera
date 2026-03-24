@@ -17,6 +17,8 @@
     /* Control button */
     --font-size-control-label: 10px;
     --font-size-control-value: 16px;
+    --font-size-control-label-small: 9px;
+    --font-size-control-value-small: 15px;
     --color-control-background: #131416;
     --color-control-border: #1f232a;
 
@@ -203,23 +205,7 @@ body {
 .control-cluster {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-}
-
-@media (max-width: 720px) {
-    .control-cluster {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-        width: 100%;
-        max-width: 220px;
-    }
-
-    .adjustable-control {
-        width: 100%;
-        min-width: 0;
-        padding: 0;
-    }
+    gap: 8px;
 }
 
 .control-cluster-left {
@@ -233,9 +219,9 @@ body {
 }
 
 .adjustable-control {
-    min-width: 72px;
+    min-width: 56px;
     height: 50px;
-    padding: 0 14px;
+    padding: 0 8px;
     border-radius: 0px;
     background: var(--color-control-background);
     border: 1px solid var(--color-control-border);
@@ -306,6 +292,34 @@ body {
 /* 点击后临时显示 hint */
 .adjustable-control.show-hint .control-value {
     color: var(--color-text-hint);
+}
+
+@media (max-width: 640px) {
+    .control-cluster {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        width: 100%;
+        max-width: 220px;
+    }
+
+    .adjustable-control {
+        width: 100%;
+        min-width: 0;
+        height: 40px;
+        padding: 0;
+
+        font-size: 10px;
+    }
+
+    .control-label {
+        font-size: var(--font-size-control-label-small);
+        padding-bottom: 2px;
+    }
+
+    .control-value {
+        font-size: var(--font-size-control-value-small);
+    }
 }
   
 #preview-image {
@@ -473,7 +487,7 @@ code {
     }
 }
   
-@media (max-width: 680px) {
+@media (max-width: 640px) {
     .page {
       width: min(100vw - 20px, 1200px);
       padding-top: 16px;

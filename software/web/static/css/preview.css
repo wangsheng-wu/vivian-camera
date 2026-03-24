@@ -304,9 +304,10 @@ body {
 /* picker */
 .control-picker {
     position: absolute;
-    left: 8px;
-    right: 8px;
-    bottom: 66px;
+    left: 0;
+    top: 0;
+    width: max-content;
+    max-width: calc(100% - 16px);
     z-index: 30;
 
     padding: 12px;
@@ -342,6 +343,7 @@ body {
 .control-picker-viewport {
     position: relative;
     height: 188px;
+    min-width: 124px;
     overflow: hidden;
     border: 1px solid var(--color-border-subtle);
     background: #101113;
@@ -373,6 +375,7 @@ body {
 
 .control-picker-item {
     height: 40px;
+    padding: 0 16px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -382,6 +385,7 @@ body {
     transition: color 0.12s ease, transform 0.12s ease, opacity 0.12s ease;
     opacity: 0.5;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .control-picker-item.is-selected {
@@ -607,7 +611,7 @@ code {
     }
 
     .control-picker {
-        bottom: 104px;
+        max-width: calc(100% - 12px);
     }
 
     .control-picker-viewport {

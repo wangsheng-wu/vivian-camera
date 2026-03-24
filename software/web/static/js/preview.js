@@ -195,6 +195,10 @@ function setupAdjustableControls() {
   let didDragDuringPointer = false;
   let suppressViewportClick = false;
 
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
   function clampIndex(index) {
     if (activeOptions.length === 0) return 0;
     return Math.max(0, Math.min(index, activeOptions.length - 1));
@@ -257,6 +261,30 @@ function setupAdjustableControls() {
     });
   }
 
+  function positionPickerForButton(button) {
+    const card = picker.closest(".viewer-card");
+    if (!card || !button) return;
+
+    const cardRect = card.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
+    const panelPadding = 8;
+    const gapAboveButton = 8;
+
+    const pickerWidth = picker.offsetWidth;
+    const pickerHeight = picker.offsetHeight;
+
+    const targetLeft = buttonRect.left + (buttonRect.width - pickerWidth) / 2 - cardRect.left;
+    const maxLeft = Math.max(panelPadding, cardRect.width - pickerWidth - panelPadding);
+    const nextLeft = clamp(targetLeft, panelPadding, maxLeft);
+
+    const targetTop = buttonRect.top - cardRect.top - pickerHeight - gapAboveButton;
+    const maxTop = Math.max(panelPadding, cardRect.height - pickerHeight - panelPadding);
+    const nextTop = clamp(targetTop, panelPadding, maxTop);
+
+    picker.style.left = `${nextLeft}px`;
+    picker.style.top = `${nextTop}px`;
+  }
+
   function openPicker(button) {
     if (!button || button.classList.contains("is-disabled")) return;
 
@@ -292,6 +320,7 @@ function setupAdjustableControls() {
     button.classList.add("is-open");
     picker.classList.add("is-visible");
     picker.setAttribute("aria-hidden", "false");
+    positionPickerForButton(button);
   }
 
   function closePicker() {
@@ -456,6 +485,11 @@ function setupAdjustableControls() {
       event.preventDefault();
       commitSelection();
     }
+  });
+
+  window.addEventListener("resize", () => {
+    if (!picker.classList.contains("is-visible") || !activeButton) return;
+    positionPickerForButton(activeButton);
   });
 }
 

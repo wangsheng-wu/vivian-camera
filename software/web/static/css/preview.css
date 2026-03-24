@@ -215,7 +215,7 @@ body {
         max-width: 220px;
     }
 
-    .control-placeholder {
+    .adjustable-control {
         width: 100%;
         min-width: 0;
         padding: 0;
@@ -232,7 +232,7 @@ body {
     justify-content: flex-end;
 }
 
-.control-placeholder {
+.adjustable-control {
     min-width: 72px;
     height: 50px;
     padding: 0 14px;
@@ -256,13 +256,13 @@ body {
     -webkit-user-select: none;
 }
 
-.control-placeholder:hover {
+.adjustable-control:hover {
     background: #1a1c1d;
     border-color: #3a414a;
     transform: translateY(-1px);
 }
 
-.control-placeholder:active {
+.adjustable-control:active {
     transform: scale(0.97);
 }
 
@@ -278,33 +278,33 @@ body {
     color: var(--color-text-primary);
 }
 
-.control-placeholder.is-disabled {
+.adjustable-control.is-disabled {
     /* opacity: 0.45; */
 
     background: var(--color-control-background);
     border-color: var(--color-border-subtle);
 }
 
-.control-placeholder.is-disabled .control-label {
+.adjustable-control.is-disabled .control-label {
     color: var(--color-text-tertiary);
 }
 
-.control-placeholder.is-disabled .control-value {
+.adjustable-control.is-disabled .control-value {
     color: var(--color-text-tertiary);
 }
 
-.control-placeholder.is-disabled:hover {
+.adjustable-control.is-disabled:hover {
     background: var(--color-control-background);
     border-color: var(--color-control-border);
     transform: none;
 }
 
-.control-placeholder.is-disabled:active {
+.adjustable-control.is-disabled:active {
     transform: scale(0.97);
 }
 
 /* 点击后临时显示 hint */
-.control-placeholder.show-hint .control-value {
+.adjustable-control.show-hint .control-value {
     color: var(--color-text-hint);
 }
   

@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 function setupFixedControlHints() {
-  const controls = document.querySelectorAll('.control-placeholder.is-disabled[data-fixed-hint]');
+  const controls = document.querySelectorAll('.adjustable-control.is-disabled[data-fixed-hint]');
 
   controls.forEach((button) => {
     const valueEl = button.querySelector('.control-value');

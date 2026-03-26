@@ -2,7 +2,9 @@
 
 Current status: **Early Experimental Stage**
 
-<img src="./assets/prototype/vivian-prototype-v1.png" alt="Vivian Camera Prototype" style="width: 50%;">
+<div align="center">
+  <img src="./assets/prototype/vivian-prototype-1.png" alt="Vivian Camera Prototype" style="width: 50%;">
+</div>
 
 <img src="./assets/interface/interface.png" alt="Vivian Camera UI" />
 

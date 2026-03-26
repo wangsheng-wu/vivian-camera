@@ -5,3 +5,4 @@
 *.png
 data/
 !assets/interface/interface.png
+!assets/prototype/vivian-prototype-v1.png

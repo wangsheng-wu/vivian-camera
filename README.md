@@ -2,6 +2,9 @@
 
 Current status: **Early Experimental Stage**
 
+
+<img src="./assets/interface/interface.png" alt="Vivian Camera UI" />
+
 ---
 
 ## Development Roadmap
